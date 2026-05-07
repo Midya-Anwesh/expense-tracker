@@ -8,6 +8,7 @@ import { ExpencesModule } from './expences/expences.module';
 import { db_connection } from '../datasource';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CommonModule } from './common/common.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,7 +24,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       })
     })
     ,TypeOrmModule.forRoot(db_connection.options),
-     AuthModule, UsersModule, ExpencesModule],
+     AuthModule, UsersModule, ExpencesModule, CommonModule],
   controllers: [AppController],
   providers: [AppService],
 })
