@@ -6,11 +6,7 @@ import { UserSerializerDto } from "../dtos/user-serializer.dto";
 export class UserSerializeInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>) {
         return next.handle().pipe(
-            map(
-                (res) => {
-                    plainToClass(UserSerializerDto, res, {excludeExtraneousValues: true});
-                }
-            )
+            map((data: any) => plainToClass(UserSerializerDto, data, {excludeExtraneousValues: true}))
         );
     }
 }

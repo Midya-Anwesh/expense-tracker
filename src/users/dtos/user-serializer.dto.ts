@@ -5,10 +5,10 @@ export class UserSerializerDto{
     id?: string;
 
     @Expose()
-    name: string;
+    name?: string;
 
     @Expose()
-    currency: string;
+    currency?: string;
 
     @Expose()
     signature: string;
