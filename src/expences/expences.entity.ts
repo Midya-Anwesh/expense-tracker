@@ -1,0 +1,17 @@
+import { Users } from "../users/Users.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+
+@Entity()
+export class Expences {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column()
+    amount: number;
+
+    @Column()
+    note: string;
+
+    @ManyToOne(() => Users, (user) => user.expences)
+    users: Users;
+}
