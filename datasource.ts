@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
-config({path: `.env.${process.env.NODE_ENV}`, quiet: false})
+config({path: `.env.${process.env.NODE_ENV}`})
 
 let db_config = {
     type: 'mysql',
     synchronize: false,
-    migrations: [__dirname + './migrations/*{js,ts}'],
+    migrations: ['./migrations/*.js'],
     cli: {
         migrationDir: './migrations'
     }
@@ -18,7 +18,7 @@ switch (process.env.NODE_ENV){
             database: process.env.DB_NAME,
             username: process.env.USER_NAME,
             password: process.env.PASSWORD,
-            entities: [__dirname + '/**/*.entity.{ts, js}']
+            entities: [__dirname + '/**/*.entity.{ts,js}']
         });
         break;
     

@@ -18,6 +18,9 @@ export class Users{
     email: string;
 
     @Column()
+    password: string;
+
+    @Column()
     currency: string;
 
     @OneToMany(() => Expences, (expence) => expence.users)

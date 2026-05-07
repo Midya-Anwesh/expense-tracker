@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddPasswordField1778144960053 implements MigrationInterface {
-    name = 'AddPasswordField1778144960053'
+export class InitSchema1778150473708 implements MigrationInterface {
+    name = 'InitSchema1778150473708'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`expences\` (\`id\` varchar(36) NOT NULL, \`amount\` int NOT NULL, \`note\` varchar(255) NOT NULL, \`usersId\` varchar(36) NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
