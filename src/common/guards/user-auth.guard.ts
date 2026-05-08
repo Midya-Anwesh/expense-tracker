@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Request } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { Injectable } from "@nestjs/common";
+import { AuthService } from "../../auth/auth.service";
 
 declare global {
     namespace Express {
@@ -19,7 +20,8 @@ declare global {
 @Injectable()
 export class UserAuthGuard implements CanActivate {
     constructor(
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private authService: AuthService
     ){}
     async canActivate(context: ExecutionContext){
         const req: Request = context.switchToHttp().getRequest();
@@ -28,6 +30,9 @@ export class UserAuthGuard implements CanActivate {
             return false;
         }
         const payload = await this.jwtService.verifyAsync(token);
+        if (await this.authService.isBlocked(payload.id, token)){
+            return false;
+        }
         req.currUser = {...payload, token};
         return true;
     }
