@@ -6,6 +6,7 @@ import type { Request as ExpressRequest } from 'express';
 import { CreateExpenceDto } from './dtos/create-expence.dto';
 import { Users } from '../users/Users.entity';
 import { UsersService } from '../users/users.service';
+import { UpdateExpenceDto } from './dtos/update-expence.dto';
 
 @Injectable()
 export class ExpencesService {
@@ -19,13 +20,87 @@ export class ExpencesService {
         if (!user){
             throw new BadRequestException(`Please login to proceed`);
         }
-        if (!expenceObj.date){
-            expenceObj.date = new Date();
-        }
+        expenceObj.date = new Date();
         const expense = this.expencesRepo.create({
             ...expenceObj,
             users: user
         });
         return await this.expencesRepo.save(expense);
+    }
+
+    async monthlyAnalysis(currUser: ExpressRequest["currUser"]){
+        const user = await this.usersService.getUser(currUser.email);
+        if (!user){
+            throw new BadRequestException(`Please login again`);
+        }
+        const res = await this.expencesRepo.find({
+            where: {
+                users: user
+            }
+        });
+
+        const report = {};
+        for (const expence of res){
+            const date = new Date(expence.date);
+            const currYear = date.getFullYear();
+            const currMonth = date.getMonth();
+            const currCat = expence.category;
+
+            if (! (currYear in report)){
+                report[currYear] = {};
+            }
+            if (! (currMonth in report[currYear]) ){
+                report[currYear][currMonth] = {};
+            }
+            if (! (currCat in report[currYear][currMonth])){
+                report[currYear][currMonth][currCat] = 0;
+            }
+            report[currYear][currMonth][currCat] += Number(expence.amount);
+        }
+
+        return report;
+    }
+
+    async updateLog(expenceId: string, currUser: ExpressRequest["currUser"], updateObj: UpdateExpenceDto){
+        const expence = await this.expencesRepo.createQueryBuilder('expences')
+        .innerJoin('expences.users', 'users')
+        .where('expences.id = :expenceId', {expenceId})
+        .select('expences')
+        .addSelect('users.id')
+        .getOne();
+        console.log(expence);
+        if (!expence){
+            throw new BadRequestException(`No expence log found with id: ${expenceId}`);
+        }
+        if (expence.users.id !== currUser.id){
+            throw new BadRequestException(`Users can only modify their own logs`);
+        }
+
+        const updatedExpence = Object.assign(expence, updateObj);
+        const toSave = this.expencesRepo.create(updatedExpence);
+        return await this.expencesRepo.save(toSave);
+    }
+
+    async deleteLog(expenceId: string, currUser: ExpressRequest["currUser"]){
+        const expence = await this.expencesRepo.findOne({
+            where: {id: expenceId},
+            relations: {users: true},
+            select: {
+                id: true,
+                users: {
+                    id: true
+                }
+            }
+        });
+
+        
+        if (!expence){
+            throw new BadRequestException(`No expence found with id: ${expenceId}`);
+        }
+        if (expence.users.id !== currUser.id){
+            throw new BadRequestException(`Users Can only delete their logs`);
+        }
+
+        return await this.expencesRepo.remove(expence);
     }
 }
