@@ -9,7 +9,7 @@ import { verify } from 'argon2';
 export class UsersService {
     constructor(
         @InjectRepository(Users) private userRepo: Repository<Users>
-    ){}
+    ){}                                                             
 
     async getUser(email: string){
         return await this.userRepo.findOneBy({email});
