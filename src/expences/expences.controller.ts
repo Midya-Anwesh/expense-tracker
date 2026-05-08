@@ -39,4 +39,10 @@ export class ExpencesController {
     deleteExpence(@Query('expenseId') expenseId: string, @Req() req: ExpressRequest){
         return this.expencesService.deleteLog(expenseId, req.currUser);
     }
+
+    @UseGuards(UserAuthGuard)
+    @Get('dashboard')
+    viewDashboard(@Req() req: ExpressRequest){
+        return this.expencesService.dashboard(req.currUser);
+    }
 }

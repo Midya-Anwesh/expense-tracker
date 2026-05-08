@@ -22,7 +22,8 @@ export class AuthService {
     private async signUser(user: Users){
         const payload = {
             id: user.id,
-            email: user.email
+            email: user.email,
+            name: user.name
         }
         const signature = await this.jwtService.signAsync(payload);
         return Object.assign(payload, {signature});

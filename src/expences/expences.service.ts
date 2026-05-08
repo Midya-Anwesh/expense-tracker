@@ -4,7 +4,6 @@ import { Expences } from './expences.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { Request as ExpressRequest } from 'express';
 import { CreateExpenceDto } from './dtos/create-expence.dto';
-import { Users } from '../users/Users.entity';
 import { UsersService } from '../users/users.service';
 import { UpdateExpenceDto } from './dtos/update-expence.dto';
 
@@ -68,7 +67,6 @@ export class ExpencesService {
         .select('expences')
         .addSelect('users.id')
         .getOne();
-        console.log(expence);
         if (!expence){
             throw new BadRequestException(`No expence log found with id: ${expenceId}`);
         }
@@ -102,5 +100,24 @@ export class ExpencesService {
         }
 
         return await this.expencesRepo.remove(expence);
+    }
+
+    async dashboard(currUser: ExpressRequest["currUser"]){
+        const res = await this.expencesRepo.createQueryBuilder('expence')
+                    .innerJoin('expence.users', 'user')
+                    .select([
+                        'expence.category'
+                    ])
+                    .where('user.id = :userId', {userId: currUser.id})
+                    .groupBy('expence.category, user.name, user.email')
+                    .addSelect([
+                        'SUM(expence.amount) AS "Total Spent"'
+                    ])
+                    .getRawMany();
+        return {
+            name: currUser.name,
+            email: currUser.email,
+            spendings: res
+        };
     }
 }
