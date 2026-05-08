@@ -9,6 +9,7 @@ declare global {
             currUser: {
                 id: string;
                 email: string;
+                token: string;
             }
         }
     }
@@ -26,7 +27,7 @@ export class UserAuthGuard implements CanActivate {
             return false;
         }
         const payload = await this.jwtService.verifyAsync(token);
-        req.currUser = payload;
+        req.currUser = {...payload, token};
         return true;
     }
 }

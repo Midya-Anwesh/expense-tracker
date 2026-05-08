@@ -1,3 +1,4 @@
+import { JwtList } from "../auth/JWTList.entity";
 import { Expences } from "../expences/expences.entity";
 import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from "typeorm";
 
@@ -25,4 +26,7 @@ export class Users{
 
     @OneToMany(() => Expences, (expence) => expence.users)
     expences: Expences[];
+
+    @OneToMany(() => JwtList, (jwtList) => jwtList.user)
+    tokens: JwtList[];
 }
