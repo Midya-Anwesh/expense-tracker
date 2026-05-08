@@ -7,5 +7,9 @@ export class CreateExpenceDto{
 
     @IsString()
     @MinLength(1)
+    category: string;
+
+    @IsString()
+    @MinLength(1)
     note: string;
 }
