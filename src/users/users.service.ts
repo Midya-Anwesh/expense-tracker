@@ -26,8 +26,8 @@ export class UsersService {
     async validateUser(email: string, password: string){
         const user = await this.getUser(email);
         if (!user){
-            throw new BadRequestException(`No user found with email: ${email}`);
-        }
+            throw new BadRequestException(`No user found with email: ${email}`);          
+        }  
         if (! (await verify(user.password, password))){
             throw new BadRequestException(`Email or password is wrong`);
         }
