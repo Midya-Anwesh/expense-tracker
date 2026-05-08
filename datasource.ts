@@ -5,7 +5,7 @@ config({path: `.env.${process.env.NODE_ENV}`})
 let db_config = {
     type: 'mysql',
     synchronize: false,
-    migrations: ['./migrations/*.js'],
+    migrations: ['/migrations/*.js'],
     cli: {
         migrationDir: './migrations'
     }

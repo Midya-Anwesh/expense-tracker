@@ -6,11 +6,14 @@ export class Expences {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column("decimal")
     amount: number;
 
     @Column()
     note: string;
+
+    @Column()
+    category: string;
 
     @ManyToOne(() => Users, (user) => user.expences)
     users: Users;
