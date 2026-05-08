@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Min, MinLength } from "class-validator";
+import { Matches, IsNumber, IsString, Min, MinLength, IsIn } from "class-validator";
 
 export class CreateExpenceDto{
     @IsNumber()
@@ -6,10 +6,12 @@ export class CreateExpenceDto{
     amount: number;
 
     @IsString()
-    @MinLength(1)
+    @IsIn(["FOOD", "BVG"])
     category: string;
 
     @IsString()
     @MinLength(1)
     note: string;
+
+    date: Date;
 }

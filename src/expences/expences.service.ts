@@ -19,6 +19,9 @@ export class ExpencesService {
         if (!user){
             throw new BadRequestException(`Please login to proceed`);
         }
+        if (!expenceObj.date){
+            expenceObj.date = new Date();
+        }
         const expense = this.expencesRepo.create({
             ...expenceObj,
             users: user

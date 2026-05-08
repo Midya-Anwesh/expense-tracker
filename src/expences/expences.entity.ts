@@ -15,6 +15,9 @@ export class Expences {
     @Column()
     category: string;
 
+    @Column("date", {nullable: false})
+    date: Date;
+
     @ManyToOne(() => Users, (user) => user.expences)
     users: Users;
 }

@@ -13,6 +13,9 @@ export class ExpenceSerializerDto {
     category: string;
 
     @Expose()
+    date: Date;
+
+    @Expose()
     @Type(() => UserSerializerDto)
     users: Users;
 }
