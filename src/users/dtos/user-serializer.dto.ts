@@ -2,13 +2,13 @@ import { Expose } from "class-transformer";
 
 export class UserSerializerDto{
     @Expose()
-    id?: string;
+    id: string;
 
     @Expose()
-    name?: string;
+    name: string;
 
     @Expose()
-    currency?: string;
+    currency: string;
 
     @Expose()
     signature: string;
