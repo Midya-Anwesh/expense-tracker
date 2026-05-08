@@ -23,7 +23,7 @@ export class UsersService {
         return await this.userRepo.save(newUser);
     }
 
-    async validateUser(email: string, password: string){
+    async validateUser(email: string, password: string){                     
         const user = await this.getUser(email);
         if (!user){
             throw new BadRequestException(`No user found with email: ${email}`);          
