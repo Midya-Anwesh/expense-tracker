@@ -16,7 +16,7 @@ export class UsersService {
     }
 
     async createUser(user: UserSignupDto | Users){
-        if (user instanceof Users){
+        if (user instanceof Users){                            
             return await this.userRepo.save(user);
         }
         const newUser = this.userRepo.create(user);
