@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Expences } from './expences.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +15,10 @@ export class ExpencesService {
     ){}
 
     async createLog(expenceObj: CreateExpenceDto, currUser: ExpressRequest["currUser"]){
-        const user = await this.usersService.getUser(currUser.email) as Users;
+        const user = await this.usersService.getUser(currUser.email);
+        if (!user){
+            throw new BadRequestException(`Please login to proceed`);
+        }
         const expense = this.expencesRepo.create({
             ...expenceObj,
             users: user
