@@ -74,7 +74,7 @@ export class AuthService {
         }
 
         // Verify the user
-        if (! (verify(user.password, updateObj.password))){
+        if (! (await verify(user.password, updateObj.password))){
             throw new BadRequestException(`Wrong email or password`);
         }
 
