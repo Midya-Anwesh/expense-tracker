@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { UserLoginDto } from './dtos/user-login.dto';
 import { hash, verify } from 'argon2';
@@ -32,7 +32,7 @@ export class AuthService {
     async validateUser(email: string, password: string){                     
         const user = await this.usersService.getUserByEmail(email);
         if (!user){
-            throw new BadRequestException(`No user found with email: ${email}`);          
+            throw new NotFoundException(`No user found with email: ${email}`);          
         }  
         if (! (await verify(user.password, password))){
             throw new BadRequestException(`Email or password is wrong`);

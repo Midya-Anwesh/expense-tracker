@@ -7,6 +7,7 @@ import { ExpenceSerializer } from './interceptors/expence-serializer.interceptor
 import { UpdateExpenceDto } from './dtos/update-expence.dto';
 
 
+@UseGuards(UserAuthGuard)
 @Controller('expences')
 export class ExpencesController {
     constructor(
@@ -14,35 +15,35 @@ export class ExpencesController {
     ){}
 
     @UseInterceptors(ExpenceSerializer)
-    @UseGuards(UserAuthGuard)
     @Post('create')
     createExpence(@Body() expenceObj: CreateExpenceDto, @Req() req: ExpressRequest){
         return this.expencesService.createLog(expenceObj, req.currUser);
     }
 
-    @UseGuards(UserAuthGuard)
     @Get('monthly/analysis')
     getMonthlyAnalysis(@Req() req: ExpressRequest){
         return this.expencesService.monthlyAnalysis(req.currUser);
     }
 
     @UseInterceptors(ExpenceSerializer)
-    @UseGuards(UserAuthGuard)
     @Patch('update')
     updateExpence(@Body() updateObj: UpdateExpenceDto, @Query('expenseId') expenseId: string, @Req() req: ExpressRequest){
         return this.expencesService.updateLog(expenseId, req.currUser, updateObj);
     }
 
     @UseInterceptors(ExpenceSerializer)
-    @UseGuards(UserAuthGuard)
     @Delete('log')
     deleteExpence(@Query('expenseId') expenseId: string, @Req() req: ExpressRequest){
         return this.expencesService.deleteLog(expenseId, req.currUser);
     }
 
-    @UseGuards(UserAuthGuard)
     @Get('dashboard')
     viewDashboard(@Req() req: ExpressRequest){
         return this.expencesService.dashboard(req.currUser);
+    }
+
+    @Get('find')
+    findQuery(@Query('q') q: string, @Req() req: ExpressRequest){
+        return this.expencesService.findQuery(q, req.currUser);
     }
 }

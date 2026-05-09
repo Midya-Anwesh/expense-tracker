@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -55,7 +55,7 @@ export class TokenService {
         const res = await this.findTokenEntry(identifier, userId);
 
         if (!res){
-            throw new BadRequestException(`No token entry found`);
+            throw new NotFoundException(`No token entry found`);
         }
 
         return res.blockListed;
@@ -67,7 +67,7 @@ export class TokenService {
             const token = await this.findTokenEntry(identifier, userId);
 
             if (!token){
-                throw new BadRequestException(`No token found to be blocked, requested identifier: ${identifier}, userid: ${userId}`);
+                throw new NotFoundException(`No token found to be blocked, requested identifier: ${identifier}, userid: ${userId}`);
             }
 
             token.blockListed = true;

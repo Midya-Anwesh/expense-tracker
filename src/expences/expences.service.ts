@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Expences } from './expences.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -79,7 +79,7 @@ export class ExpencesService {
         .addSelect('users.id')
         .getOne();
         if (!expence){
-            throw new BadRequestException(`No expence log found with id: ${expenceId}`);
+            throw new NotFoundException(`No expence log found with id: ${expenceId}`);
         }
         if (expence.users.id !== currUser.id){
             throw new BadRequestException(`Users can only modify their own logs`);
@@ -104,7 +104,7 @@ export class ExpencesService {
 
         
         if (!expence){
-            throw new BadRequestException(`No expence found with id: ${expenceId}`);
+            throw new NotFoundException(`No expence found with id: ${expenceId}`);
         }
         if (expence.users.id !== currUser.id){
             throw new BadRequestException(`Users Can only delete their logs`);
@@ -133,7 +133,7 @@ export class ExpencesService {
         }
         return  {
             name: res[0]["user_name"],
-            id: res[0]["user_email"],
+            email: res[0]["user_email"],
             spendings: res.map((expenditure) => {
                 return {
                     expense_category: expenditure["expence_category"],
@@ -141,5 +141,12 @@ export class ExpencesService {
                 }
             })
         };
+    }
+
+    async findQuery(query: string, currUser: ExpressRequest["currUser"]){
+        return await this.expencesRepo.createQueryBuilder('expences')
+                    .where('note LIKE :term', {term: `%${query}%`})
+                    .andWhere('usersId = :userId', {userId: currUser.id})
+                    .getRawMany();
     }
 }
