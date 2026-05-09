@@ -149,4 +149,21 @@ export class ExpencesService {
                     .andWhere('usersId = :userId', {userId: currUser.id})
                     .getRawMany();
     }
+
+    async categorySummary(catName: string | undefined){
+        const query = this.expencesRepo.createQueryBuilder('expences')
+                .groupBy('category')
+                .select([
+                    'category',
+                    'COUNT(expences.id) AS "Times bought"',
+                    'SUM(amount) AS "Total Spent"'
+                ]);
+        
+        if (!catName){
+            return await query.getRawMany();
+        }
+        return await query
+                .where('category = :catName', {catName})
+                .getRawMany();
+    }
 }

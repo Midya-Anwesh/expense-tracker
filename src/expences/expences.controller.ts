@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards, UseInterceptors, Get, Patch, Query, Delete } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, UseInterceptors, Get, Patch, Query, Delete, SetMetadata } from '@nestjs/common';
 import { ExpencesService } from './expences.service';
 import { CreateExpenceDto } from './dtos/create-expence.dto';
 import type { Request as ExpressRequest } from 'express';
@@ -46,4 +46,11 @@ export class ExpencesController {
     findQuery(@Query('q') q: string, @Req() req: ExpressRequest){
         return this.expencesService.findQuery(q, req.currUser);
     }
+
+    @SetMetadata('Public', true)
+    @Get('cat-summary')
+    getSummary(@Query('catName') catName: string | undefined){
+        return this.expencesService.categorySummary(catName);
+    }
+
 }
