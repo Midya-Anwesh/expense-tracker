@@ -1,4 +1,4 @@
-import { JwtList } from "../auth/JWTList.entity";
+import { JwtList } from "../auth/jwt/JWTList.entity";
 import { Expences } from "../expences/expences.entity";
 import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from "typeorm";
 
