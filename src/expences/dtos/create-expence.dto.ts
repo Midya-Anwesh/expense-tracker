@@ -1,5 +1,4 @@
-import { Matches, IsNumber, IsString, Min, MinLength, IsIn } from "class-validator";
-
+import { IsNumber, IsString, Min, MinLength, IsIn, Matches, IsOptional } from "class-validator";
 export class CreateExpenceDto{
     @IsNumber()
     @Min(1)
@@ -13,5 +12,9 @@ export class CreateExpenceDto{
     @MinLength(1)
     note: string;
 
-    date: Date;
+    @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Enter date in YYYY-MM-DD format or leave blank for current date"
+    })
+    @IsOptional()
+    date: string | Date;
 }

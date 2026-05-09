@@ -19,7 +19,18 @@ export class ExpencesService {
         if (!user){
             throw new BadRequestException(`Please login to proceed`);
         }
-        expenceObj.date = new Date();
+        // Change the date from string to Date type
+        // If given, then convert otherwise use current date
+        if (expenceObj.date){
+            expenceObj.date = new Date(expenceObj.date);
+            // If wrong date is given in correct format, set current date
+            if (expenceObj.date.toString() === "Invalid Date"){
+                expenceObj.date = new Date();
+            }
+        }
+        else {
+            expenceObj.date = new Date();
+        }
         const expense = this.expencesRepo.create({
             ...expenceObj,
             users: user
@@ -42,7 +53,7 @@ export class ExpencesService {
         for (const expence of res){
             const date = new Date(expence.date);
             const currYear = date.getFullYear();
-            const currMonth = date.getMonth();
+            const currMonth = date.getMonth() + 1; // As months are 0 indexed in js
             const currCat = expence.category;
 
             if (! (currYear in report)){
