@@ -60,12 +60,13 @@ export class ExpencesService {
                 report[currYear] = {};
             }
             if (! (currMonth in report[currYear]) ){
-                report[currYear][currMonth] = {};
+                report[currYear][currMonth] = {"Monthly Total": 0};
             }
             if (! (currCat in report[currYear][currMonth])){
                 report[currYear][currMonth][currCat] = 0;
             }
             report[currYear][currMonth][currCat] += Number(expence.amount);
+            report[currYear][currMonth]["Monthly Total"] += Number(expence.amount);
         }
 
         return report;

@@ -6,6 +6,7 @@ import { UserSignupDto } from './dtos/user-signup.dto';
 import type { Request as ExpressRequest } from 'express';
 import { UserUpdateMailDto } from './dtos/user-update-mail.dto';
 import { TokenService } from './jwt/token.service';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 declare global {
     namespace Express {
@@ -29,14 +30,19 @@ export class AuthService {
         return this.usersService.getUserById(currUser.id);
     }
 
+    async verifyPassword(digest: string, password: string){
+        if (! (await verify(digest, password))){
+            throw new BadRequestException(`Mail or password is wrong`);
+        }
+        return;
+    }
+
     async validateUser(email: string, password: string){                     
         const user = await this.usersService.getUserByEmail(email);
         if (!user){
             throw new NotFoundException(`No user found with email: ${email}`);          
         }  
-        if (! (await verify(user.password, password))){
-            throw new BadRequestException(`Email or password is wrong`);
-        }
+        await this.verifyPassword(user.password, password);
         return user;
     }
 
@@ -73,10 +79,8 @@ export class AuthService {
             throw new BadRequestException(`User can update their own email address only`);
         }
 
-        // Verify the user
-        if (! (await verify(user.password, updateObj.password))){
-            throw new BadRequestException(`Wrong email or password`);
-        }
+        // Verify the user password
+        await this.verifyPassword(user.password, updateObj.password);
 
         // Check if there is another user registered with the updated email
         // If yes don't update the email address
@@ -93,7 +97,7 @@ export class AuthService {
         await this.usersService.createUser(user);
 
         // Now generate and save and return new jwt token
-        return this.login({
+        return await this.login({
             email: updateObj.newEmail,
             password: updateObj.password
         });
@@ -101,5 +105,31 @@ export class AuthService {
 
     async signout(currUser: ExpressRequest["currUser"], all: Boolean = false){
         return await this.tokenService.blockToken(currUser.tokenIdentifier, currUser.id, all);
+    }
+
+    async updatePassword(passwordUpdateObj: UpdatePasswordDto, currUser: ExpressRequest["currUser"]){
+        const user = await this.usersService.getUserByEmail(passwordUpdateObj.email);
+        if (!user){
+            throw new NotFoundException(`No users found with email: ${passwordUpdateObj.email}`);
+        }
+        if (user.id !== currUser.id){
+            throw new BadRequestException(`Users may update their own password only`);
+        }
+
+        // Verify old password
+        await this.verifyPassword(user.password, passwordUpdateObj.oldPassword);
+
+        // Block current token for the user
+        await this.tokenService.blockToken(currUser.tokenIdentifier, currUser.id);
+
+        // Update password and save in db
+        user.password = await hash(passwordUpdateObj.newPassword);
+        await this.usersService.createUser(user);
+
+        // Now log the user back in
+        return await this.login({
+            email: passwordUpdateObj.email,
+            password: passwordUpdateObj.newPassword
+        });
     }
 }
