@@ -99,7 +99,7 @@ export class AuthService {
         });
     }
 
-    async signout(currUser: ExpressRequest["currUser"]){
-        return await this.tokenService.blockToken(currUser.tokenIdentifier, currUser.id);
+    async signout(currUser: ExpressRequest["currUser"], all: Boolean = false){
+        return await this.tokenService.blockToken(currUser.tokenIdentifier, currUser.id, all);
     }
 }

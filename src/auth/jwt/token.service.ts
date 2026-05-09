@@ -61,14 +61,24 @@ export class TokenService {
         return res.blockListed;
     }
 
-    async blockToken(identifier: string, userId: string){
-        const token = await this.findTokenEntry(identifier, userId);
+    async blockToken(identifier: string, userId: string, all: Boolean = false){
+        // Block a specific token
+        if (!all){
+            const token = await this.findTokenEntry(identifier, userId);
 
-        if (!token){
-            throw new BadRequestException(`No token found to be blocked, requested identifier: ${identifier}, userid: ${userId}`);
+            if (!token){
+                throw new BadRequestException(`No token found to be blocked, requested identifier: ${identifier}, userid: ${userId}`);
+            }
+
+            token.blockListed = true;
+            return await this.jwtRepo.save(token);
         }
 
-        token.blockListed = true;
-        return await this.jwtRepo.save(token);
+        // Blocks all tokens of a specific user
+        return await this.jwtRepo.createQueryBuilder('jwtList')
+                    .update()
+                    .set({blockListed: true})
+                    .where('userId = :userId', {userId})
+                    .execute();
     }
 }

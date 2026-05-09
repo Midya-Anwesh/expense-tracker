@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UseInterceptors , Get, Req, Patch} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UseInterceptors , Get, Req, Patch, Query} from '@nestjs/common';
 import { UserSignupDto } from './dtos/user-signup.dto';
 import { AuthService } from './auth.service';
 import { UserLoginDto } from './dtos/user-login.dto';
@@ -38,7 +38,10 @@ export class AuthController {
 
     @UseGuards(UserAuthGuard)
     @Post('logout')
-    logout(@Req() req: ExpressRequest){
+    logout(@Query('all') all: string | undefined,  @Req() req: ExpressRequest){
+        if (all === 'true'){
+            return this.authService.signout(req.currUser, true);
+        }
         return this.authService.signout(req.currUser);
     }
 }
