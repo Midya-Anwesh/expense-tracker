@@ -15,7 +15,7 @@ export class ExpencesService {
     ){}
 
     async createLog(expenceObj: CreateExpenceDto, currUser: ExpressRequest["currUser"]){
-        const user = await this.usersService.getUser(currUser.email);
+        const user = await this.usersService.getUserById(currUser.id);
         if (!user){
             throw new BadRequestException(`Please login to proceed`);
         }
@@ -28,7 +28,7 @@ export class ExpencesService {
     }
 
     async monthlyAnalysis(currUser: ExpressRequest["currUser"]){
-        const user = await this.usersService.getUser(currUser.email);
+        const user = await this.usersService.getUserById(currUser.id);
         if (!user){
             throw new BadRequestException(`Please login again`);
         }
@@ -106,7 +106,9 @@ export class ExpencesService {
         const res = await this.expencesRepo.createQueryBuilder('expence')
                     .innerJoin('expence.users', 'user')
                     .select([
-                        'expence.category'
+                        'expence.category',
+                        'user.name',
+                        'user.email'
                     ])
                     .where('user.id = :userId', {userId: currUser.id})
                     .groupBy('expence.category, user.name, user.email')
@@ -114,10 +116,19 @@ export class ExpencesService {
                         'SUM(expence.amount) AS "Total Spent"'
                     ])
                     .getRawMany();
-        return {
-            name: currUser.name,
-            email: currUser.email,
-            spendings: res
+                    
+        if (!res.length){
+            return [];
+        }
+        return  {
+            name: res[0]["user_name"],
+            id: res[0]["user_email"],
+            spendings: res.map((expenditure) => {
+                return {
+                    expense_category: expenditure["expence_category"],
+                    'Total Spent': expenditure["Total Spent"] 
+                }
+            })
         };
     }
 }

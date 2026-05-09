@@ -27,7 +27,7 @@ export class AuthController {
     @UseGuards(UserAuthGuard)
     @Get('whoami')
     whoami(@Req() req: ExpressRequest){
-        return req.currUser.email;
+        return this.authService.whoami(req.currUser);
     }
 
     @UseGuards(UserAuthGuard)
