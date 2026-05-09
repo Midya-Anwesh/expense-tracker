@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm' ;
 import { Users } from './Users.entity';
@@ -38,5 +38,14 @@ export class UsersService {
         );
         return await this.userRepo.save(updatedUser);
 
+    }
+
+    async deleteUser(userId: string){
+        const user = await this.getUserById(userId);
+        if (!user){
+            throw new NotFoundException(`No user found with id: ${userId}`);
+        }
+
+        return await this.userRepo.remove(user);
     }
 }

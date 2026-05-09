@@ -75,6 +75,7 @@ export class TokenService {
         }
 
         // Blocks all tokens of a specific user
+        // Don't bother checking token identifier
         return await this.jwtRepo.createQueryBuilder('jwtList')
                     .update()
                     .set({blockListed: true})

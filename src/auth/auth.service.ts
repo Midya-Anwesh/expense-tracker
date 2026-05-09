@@ -132,4 +132,12 @@ export class AuthService {
             password: passwordUpdateObj.newPassword
         });
     }
+
+    async deleteUser(currUser: ExpressRequest["currUser"]){
+        // First block all the tokens sent to the user
+        await this.tokenService.blockToken('', currUser.id, true);
+
+        // Now hand over deletion to users service
+        return await this.usersService.deleteUser(currUser.id);
+    }
 }

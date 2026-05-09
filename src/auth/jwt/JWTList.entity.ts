@@ -1,5 +1,5 @@
 import { Users } from "../../users/Users.entity";
-import { Entity, Column, Unique, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Entity, Column, Unique, PrimaryGeneratedColumn, ManyToOne, BeforeRemove } from "typeorm";
 
 @Entity()
 @Unique('user_token_unique', ['user', 'tokenIdentifier'])
@@ -13,6 +13,8 @@ export class JwtList {
     @Column("boolean", {default: false})
     blockListed: Boolean;
 
-    @ManyToOne(() => Users, (user) => user.tokens)
+    @ManyToOne(() => Users, (user) => user.tokens, {
+        onDelete: 'SET NULL'
+    })
     user: Users;
 }

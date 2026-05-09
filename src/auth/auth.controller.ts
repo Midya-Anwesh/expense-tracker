@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UseInterceptors , Get, Req, Patch, Query, SetMetadata} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UseInterceptors , Get, Req, Patch, Query, SetMetadata, Delete} from '@nestjs/common';
 import { UserSignupDto } from './dtos/user-signup.dto';
 import { AuthService } from './auth.service';
 import { UserLoginDto } from './dtos/user-login.dto';
@@ -51,6 +51,11 @@ export class AuthController {
             return this.authService.signout(req.currUser, true);
         }
         return this.authService.signout(req.currUser);
+    }
+
+    @Delete('delete')
+    deleteUser(@Req() req: ExpressRequest){
+        return this.authService.deleteUser(req.currUser);
     }
 
 }
