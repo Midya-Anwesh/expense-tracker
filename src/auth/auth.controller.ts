@@ -36,4 +36,9 @@ export class AuthController {
         return this.authService.changeEmail(updateObj, req.currUser);
     }
 
+    @UseGuards(UserAuthGuard)
+    @Post('logout')
+    logout(@Req() req: ExpressRequest){
+        return this.authService.signout(req.currUser);
+    }
 }
