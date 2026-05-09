@@ -10,6 +10,9 @@ export class ExpenceSerializerDto {
     note: string;
 
     @Expose()
+    name: string;
+
+    @Expose()
     category: string;
 
     @Expose()
