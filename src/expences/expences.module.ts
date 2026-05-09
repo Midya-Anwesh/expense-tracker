@@ -8,8 +8,8 @@ import { TokenModule } from '../auth/jwt/token.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Expences])
-    ,UsersModule, TokenModule],
+    TypeOrmModule.forFeature([Expences]),
+    UsersModule, TokenModule],
   providers: [ExpencesService],
   controllers: [ExpencesController]
 })
