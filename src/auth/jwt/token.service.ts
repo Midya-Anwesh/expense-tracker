@@ -38,7 +38,8 @@ export class TokenService {
         return await this.jwtRepo.findOne({
             where: { 
                 tokenIdentifier: identifier,
-                user: {
+                
+                user: { 
                     id: userId
                 }
             },
