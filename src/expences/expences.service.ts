@@ -137,17 +137,19 @@ export class ExpencesService {
             email: res[0]["user_email"],
             spendings: res.map((expenditure) => {
                 return {
-                    expense_category: expenditure["expence_category"],
+                    'Expense Category': expenditure["expence_category"],
                     'Total Spent': expenditure["Total Spent"] 
                 }
             })
         };
     }
 
-    async findQuery(query: string, currUser: ExpressRequest["currUser"]){
+    async findQuery(query: string, currUser: ExpressRequest["currUser"], pagNo: number, limit: number){
         return await this.expencesRepo.createQueryBuilder('expences')
                     .where('note LIKE :term', {term: `%${query}%`})
                     .andWhere('usersId = :userId', {userId: currUser.id})
+                    .skip((pagNo - 1) * limit)
+                    .take(limit)
                     .getRawMany();
     }
 

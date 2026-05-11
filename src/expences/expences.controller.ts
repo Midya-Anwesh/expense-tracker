@@ -43,8 +43,11 @@ export class ExpencesController {
     }
 
     @Get('find')
-    findQuery(@Query('q') q: string, @Req() req: ExpressRequest){
-        return this.expencesService.findQuery(q, req.currUser);
+    findQuery(@Query('q') q: string, @Req() req: ExpressRequest,
+            @Query('pageNo') pageNo: number | undefined,
+            @Query('limit') limit: number | undefined
+    ){
+        return this.expencesService.findQuery(q, req.currUser, pageNo ?? 1, limit ?? 10);
     }
 
     @SetMetadata('Public', true)
