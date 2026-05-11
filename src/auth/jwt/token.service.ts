@@ -36,7 +36,7 @@ export class TokenService {
 
     private async findTokenEntry(identifier: string, userId: string){
         return await this.jwtRepo.findOne({
-            where: {
+            where: { 
                 tokenIdentifier: identifier,
                 user: {
                     id: userId

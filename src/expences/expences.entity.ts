@@ -18,6 +18,8 @@ export class Expences {
     @Column("date", {nullable: false})
     date: Date;
 
-    @ManyToOne(() => Users, (user) => user.expences)
+    @ManyToOne(() => Users, (user) => user.expences, {
+        onDelete: 'CASCADE'
+    })
     users: Users;
 }

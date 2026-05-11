@@ -27,7 +27,7 @@ export class AuthService {
     ){}
 
     async whoami(currUser: ExpressRequest["currUser"]){
-        return this.usersService.getUserById(currUser.id);
+        return this.usersService.getUserById(currUser.id); 
     }
 
     async verifyPassword(digest: string, password: string){
